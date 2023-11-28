@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The RGB Game</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+      font-family: 'Arial', sans-serif;
+    }
+
+    #game-container {
+      text-align: center;
+    }
+
+    .color-box {
+      width: 100px;
+      height: 100px;
+      margin: 10px;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    #result {
+      font-size: 1.5em;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="game-container">
+  <h1>The RGB Game</h1>
+  <div>
+    <label for="difficulty">Choose Difficulty:</label>
+    <select id="difficulty">
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+  </div>
+  <div id="color-display"></div>
+  <div id="options-container"></div>
+  <div id="result"></div>
+  <button onclick="newGame()">New Game</button>
+</div>
+
+<script>
+  // Function to generate a random integer within a range
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  // Function to generate a random RGB color code
+  function generateRandomColor() {
+    const r = getRandomInt(0, 255);
+    const g = getRandomInt(0, 255);
+    const b = getRandomInt(0, 255);
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+
+  // Function to generate an array of random color options
+  function generateOptions(numOptions) {
+    const options = [];
+    for (let i = 0; i < numOptions; i++) {
+      options.push(generateRandomColor());
+    }
+    return options;
+  }
+
+  // Function to set up a new game
+  function newGame() {
+    const difficulty = document.getElementById('difficulty').value;
+    let numOptions;
+    
+    switch (difficulty) {
+      case 'easy':
+        numOptions = 3;
+        break;
+      case 'medium':
+        numOptions = 6;
+        break;
+      case 'hard':
+        numOptions = 9;
+        break;
+    }
+
+    const correctColor = generateRandomColor();
+    const options = generateOptions(numOptions);
+    options.push(correctColor);
+    options.sort(() => Math.random() - 0.5);
+
+    displayColor(correctColor);
+    displayOptions(options);
+  }
+
+  // Function to display the RGB color code
+  function displayColor(color) {
+    const colorDisplay = document.getElementById('color-display');
+    colorDisplay.textContent = color;
+    colorDisplay.style.color = color;
+  }
+
+  // Function to display the color options
+  function displayOptions(options) {
+    const optionsContainer = document.getElementById('options-container');
+    optionsContainer.innerHTML = '';
+
+    options.forEach((color, index) => {
+      const optionBox = document.createElement('div');
+      optionBox.classList.add('color-box');
+      optionBox.style.backgroundColor = color;
+      optionBox.addEventListener('click', () => checkAnswer(color));
+      optionsContainer.appendChild(optionBox);
+    });
+  }
+
+  // Function to check the selected answer
+  function checkAnswer(selectedColor) {
+    const resultDisplay = document.getElementById('result');
+    const correctColor = document.getElementById('color-display').textContent;
+
+    if (selectedColor === correctColor) {
+      resultDisplay.textContent = 'Correct! 🎉';
+    } else {
+      resultDisplay.textContent = 'Wrong! Try again. 😢';
+    }
+  }
+
+  // Initial game setup
+  newGame();
+</script>
+
+</body>
+</html>
